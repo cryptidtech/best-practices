@@ -2,7 +2,14 @@
 name = "treetool"
 version = "0.1.0"
 edition = "2018"
+authors = ["Dave Huseby <dave@cryptid.tech>"]
+description = "A simple file system tree indexing utility"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+best-practices = { path="../../" }
+clap = "2.33"
+log = "0.4"
+stderrlog = "0.5"
+structopt = "0.3"

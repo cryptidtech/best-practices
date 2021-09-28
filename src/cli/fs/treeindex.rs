@@ -15,6 +15,12 @@ use std::io::{BufReader, BufRead, Read};
 use std::path::PathBuf;
 use std::rc::Rc;
 
+#[derive(Clone)]
+pub(crate) enum TreeWork {
+    Scan(PathBuf),
+    Digest(PathBuf)
+}
+
 // A TreeIndex is a map from digest to TreeItemDupes
 #[derive(Clone, Default)]
 pub struct TreeIndex {
@@ -42,26 +48,27 @@ impl TreeIndex {
     }
 }
 
-enum TreeIndexFrom {
+enum TreeIndexFrom<'a> {
     New,
-    List(TreeList),
-    Reader(Box<dyn Read>),
-    Confirm(TreeIndex)
+    List(&'a TreeList),
+    Reader(&'a mut Box<dyn Read>),
+    Confirm(&'a TreeIndex)
 }
 
-impl Default for TreeIndexFrom {
+impl<'a> Default for TreeIndexFrom<'a> {
     fn default() -> Self {
         TreeIndexFrom::New
     }
 }
 
 #[derive(Default)]
-pub struct TreeIndexBuilder {
+pub struct TreeIndexBuilder<'a> {
     with_dupes: bool,
-    from: TreeIndexFrom
+    from: TreeIndexFrom<'a>,
 }
 
-impl TreeIndexBuilder {
+
+impl<'a> TreeIndexBuilder<'a> {
 
     pub fn new() -> Self {
         Self::default()
@@ -72,18 +79,18 @@ impl TreeIndexBuilder {
         self
     }
 
-    pub fn from_list(mut self, list: &TreeList) -> Self {
-        self.from = TreeIndexFrom::List(list.clone());
+    pub fn from_list(mut self, list: &'a TreeList) -> Self {
+        self.from = TreeIndexFrom::List(list);
         self
     }
 
-    pub fn from_reader(mut self, r: Box<dyn Read>) -> Self {
+    pub fn from_reader(mut self, r: &'a mut Box<dyn Read>) -> Self {
         self.from = TreeIndexFrom::Reader(r);
         self
     }
 
-    pub fn confirm(mut self, index: &TreeIndex) -> Self {
-        self.from = TreeIndexFrom::Confirm(index.clone());
+    pub fn confirm(mut self, index: &'a TreeIndex) -> Self {
+        self.from = TreeIndexFrom::Confirm(index);
         self
     }
 
