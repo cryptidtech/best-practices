@@ -6,6 +6,7 @@ use crate::{
     }
 };
 use blake2b_simd::Params;
+use log::debug;
 use std::convert::From;
 use std::fmt::{Display, Formatter};
 use std::fs::{self, File};

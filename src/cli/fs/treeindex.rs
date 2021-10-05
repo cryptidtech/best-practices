@@ -7,6 +7,7 @@ use crate::{
         TreeList
     }
 };
+use log::debug;
 use std::collections::HashMap;
 use std::convert::From;
 use std::ffi::OsString;

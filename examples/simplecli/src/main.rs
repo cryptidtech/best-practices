@@ -59,7 +59,7 @@ fn main() -> Result<()> {
     let opt = Opt::from_args();
 
     // set up the logger
-    match stderrlog::new().module(module_path!()).quiet(opt.quiet).verbosity(opt.verbosity).init() {
+    match stderrlog::new().quiet(opt.quiet).verbosity(opt.verbosity).init() {
         Err(e) => {
             return Err(Error::LogError(e.to_string()));
         }

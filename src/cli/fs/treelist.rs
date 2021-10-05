@@ -8,6 +8,7 @@ use crate::{
     },
     cli::io::dir
 };
+use log::debug;
 use std::collections::VecDeque;
 use std::fs;
 use std::path::PathBuf;

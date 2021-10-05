@@ -1,6 +1,6 @@
 [package]
 name = "simplecli"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2018"
 authors = ["Dave Huseby <dave@cryptid.tech>"]
 description = "A simple pipelining cli example"
