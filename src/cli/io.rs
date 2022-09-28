@@ -24,6 +24,31 @@ pub fn reader(path: &Option<PathBuf>) -> Result<Box<dyn Read>> {
     }
 }
 
+///! This function takes an optional path and returns a concrete Read'er object.
+///! This is most useful for command line applications that take either a file
+///! or stdin as input. The user can specify "-" or nothing and the result of
+///! this function is a Read'er for the stdin stream. If they specify a file,
+///! then the Read'er is the file stream. If there is an error opening the file
+///! then a crate::error::IoError result. Secure read implies whatever the
+///! types is not echoed back to the TTY.
+pub fn secure_reader(path: &Option<PathBuf>) -> Result<Box<dyn Read>> {
+    match path {
+        Some(p) => {
+            if p.to_string_lossy() == "-" {
+                let secret = rpassword::prompt_password("")?;
+                Ok(Box::new(io::Cursor::new(secret)))
+            } else {
+                let path = Path::new(&p);
+                Ok(Box::new(File::open(&path)?) as Box<dyn Read>)
+            }
+        }
+        None => {
+            let secret = rpassword::prompt_password("")?;
+            Ok(Box::new(io::Cursor::new(secret)))
+        }
+    }
+}
+
 ///! This function works in tandem with the above reader function except that
 ///! it returns a convenient OsString name for the reader. This is used for
 ///! verbose output to describe where the input is coming from.
